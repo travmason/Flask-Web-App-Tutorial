@@ -16,3 +16,10 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
     notes = db.relationship('Note')
+    conversations = db.relationship('Conversation')
+
+class Conversations(db.Model):
+    con_id = db.Column(db.Integer, primary_key=True)
+    prompt = db.Column(db.String(100000))
+    date = db.Column(db.DateTime(timezone=True), default=func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
