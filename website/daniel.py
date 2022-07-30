@@ -2,14 +2,16 @@ import openai
 import os
 from time import time,sleep
 import re
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 class Bot:
 
-    def __init__(author):
-        self.author = author
-        self.conversation = list()
+    author = ''
+    conversation_text = list()
 
-    def open_file(filepath):
+    def open_file(self, filepath):
         with open(filepath, 'r', encoding='utf-8') as infile:
             return infile.read()
 
@@ -42,20 +44,21 @@ class Bot:
             print('Error communicating with OpenAI:', oops)
             sleep(1)
 
-    def init():
-        print("Daniel: Hi, nice to be speaking with you, what's your name?")
-        conversation.append("Daniel: Hi, nice to be speaking with you, what's your name?")
-        user_input = input('Human: ')
-        prompt = open_file('prompt_greeting.txt').replace('<<NAME_BLOCK>>', user_input)
+    def __init__(self, author):
+        self.author = author or 'user_id'
+        logging.info("Daniel: Hi, nice to be speaking with you, what's your name?")
+        self.conversation_text.append("Daniel: Hi, nice to be speaking with you, what's your name?")
+        # user_input = input('Human: ')
+        prompt = self.open_file('.\prompt_greeting.txt').replace('<<NAME_BLOCK>>', user_input)
         response = gpt3_completion(prompt, temp=0)
         print('Daniel: Hi %s.' % response)
-    
-    def turn():
+
+    def turn(self, message):
         user_input = input('Human: ')
-        conversation.append('Human: %s' % user_input)
-        text_block = '\n'.join(conversation)
-        prompt = open_file('prompt_init.txt').replace('<<BLOCK>>', text_block)
+        self.conversation_text.append('Human: %s' % message)
+        text_block = '\n'.join(self.conversation)
+        prompt = self.open_file('.\prompt_init.txt').replace('<<BLOCK>>', text_block)
         prompt = prompt + '\nDaniel:'
         response = gpt3_completion(prompt)
         print('Daniel: ', response)
-        conversation.append('Daniel: %s' % response)
+        self.conversation_text.append('Daniel: %s' % response)
