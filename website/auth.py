@@ -48,8 +48,8 @@ def sign_up():
             flash('Email already exists.', category='error')
         elif len(email) < 4:
             flash('Email not valid.', category='error')
-        # elif (email.find('@') != -1):
-        #     flash('Email not valid.', category='error')
+        elif (str(email).find('@') != -1):
+             flash('Email not valid.', category='error')
         elif len(first_name) < 2:
             flash('First name must be greater than 1 character.', category='error')
         elif password1 != password2:
