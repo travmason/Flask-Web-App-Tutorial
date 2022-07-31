@@ -10,35 +10,39 @@ import logging
 
 views = Blueprint('views', __name__)
 
-
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
     if request.method == 'POST':
-        note = request.form.get('note')
-        message = request.form.get('note')
+        message = 'Human: ' + request.form.get('note')
+        logging.info('message: ' + message)
         conversation_text = list()
 
-        if len(note) < 1:
+        if len(message) < 1:
             flash('Did you mean to say something?', category='error')
         else:
-            conn_id = Conversation.query.filter_by(user_id=current_user.id).order_by(Conversation.con_id.desc()).first()
-            logging.info('conn_id:' + str(conn_id.con_id))
-            new_turn = Conversation(prompt=message, session_id=conn_id.con_id, user_id=current_user.id)
-            new_note = Note(data=note, user_id=current_user.id)
+            conversation = Conversation.query.filter_by(user_id=current_user.id).order_by(Conversation.con_id.desc()).first()
+            if conversation:
+                logging.info('session_id:' + str(conversation.session_id))
+            conversation.prompt = conversation.prompt + '\n' + message
+            conversation.user_id=current_user.id
+            new_note = Note(data=message, user_id=current_user.id)
             db.session.add(new_note)
-            db.session.add(new_turn)
             db.session.commit()
 
-            conversation_text.append('Human: %s' % message)
+            conversation_text.append(conversation.prompt)
             text_block = '\n'.join(conversation_text)
             prompt = open_file('website\\prompt_init.txt').replace('<<BLOCK>>', text_block)
             prompt = prompt + '\nDaniel:'
             response = bot.gpt3_completion(prompt)
-            logging.info('Daniel: ' + response)
-            conversation_text.append('Daniel: %s' % response)
+            display_response = 'Daniel: ' + response
+            conversation.prompt = conversation.prompt + '\nDaniel: ' + response
+            new_note = Note(data=display_response, user_id=current_user.id)
+            db.session.add(new_note)
 
-            flash('Note added!', category='success')
+            db.session.commit()
+
+            # flash('Note added!', category='success')
 
     return render_template("home.html", user=current_user)
 

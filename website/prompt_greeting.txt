@@ -1,3 +1,0 @@
-The following is a conversation with an AI called Daniel. Extract the persons name from the following text
-
-<<NAME_BLOCK>>

@@ -1,21 +1,21 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
 %}
-<h1 align="center">Notes</h1>
+<h5 align="left">The following is a conversation with an AI assistant called Daniel. The assistant exhibits symptoms of depression and has a serious mental health issue. The assistant is reluctant to talk about their condition at first unless someone mentions their family or their work.
+</h5>
 <ul class="list-group list-group-flush" id="notes">
   {% for note in user.notes %}
   <li class="list-group-item">
     {{ note.data }}
-    <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+    <!-- <button type="button" class="close" onClick="deleteNote({{ note.id }})">
       <span aria-hidden="true">&times;</span>
-    </button>
+    </button> -->
   </li>
   {% endfor %}
 </ul>
 <form method="POST">
   <input name="note" id="note" class="form-control"></input>
-  <br />
-  <div align="center">
-    <button type="submit" class="btn btn-primary">Add Note</button>
+  <div align="right">
+    <button type="submit" class="btn btn-primary">Submit</button>
   </div>
 </form>
 {% endblock %}

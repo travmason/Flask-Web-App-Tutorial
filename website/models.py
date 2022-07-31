@@ -27,3 +27,7 @@ class User(db.Model, UserMixin):
     notes = db.relationship('Note')
     conversations = db.relationship('Conversation')
 
+class Prompt(db.Model):
+    __tablename__ = 'prompt'
+    id = db.Column(db.Integer, primary_key=True)
+    prompt = db.Column(db.String(1000))

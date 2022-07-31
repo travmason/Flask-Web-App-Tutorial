@@ -1,11 +1,11 @@
+from ast import Delete
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .models import Conversation, User
+from .models import Conversation, User, Prompt, Note
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
 import logging
 import os
-from . import bot 
 
 auth = Blueprint('auth', __name__)
 
@@ -16,19 +16,17 @@ def open_file(filename):
         return infile.read()
 
 def start_conversation(user):
-    # prompt = open_file('website\\prompt_greeting.txt').replace('<<NAME_BLOCK>>', prompt)
-    prompt = open_file('website\\prompt_greeting.txt')
-    logging.info('prompt: ' + prompt)
-    
-    conn_id = Conversation.query.filter_by(user_id=user.id).order_by(Conversation.con_id.desc()).first()
-    conn_id.con_id = conn_id.con_id + 1
-    new_turn = Conversation(prompt='', session_id=conn_id.con_id, user_id=current_user.id)
-    db.session.add(new_turn)
-    db.session.commit()
+    prompt = Prompt.query.first()
+    logging.info('prompt: ' + str(prompt.prompt))
 
-    # response = bot.gpt3_completion(str(prompt), temp=0)
-    # logging.info('Daniel: Hi %s.' % response)
-    
+    conversation = Conversation.query.filter_by(user_id=user.id).order_by(Conversation.con_id.desc()).first()
+    if conversation:
+        session_id = conversation.session_id + 1
+    else:
+        session_id = 1
+    new_conversation = Conversation(prompt=prompt.prompt, session_id=session_id, user_id=current_user.id)
+    db.session.add(new_conversation)
+    db.session.commit()
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -38,7 +36,6 @@ def login():
         password = request.form.get('password')
 
         user = User.query.filter_by(email=email).first()
-        logging.info('user:' + str(user))
         if user:
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
@@ -56,6 +53,8 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
+    Note.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
     logout_user()
     return redirect(url_for('auth.login'))
 
@@ -86,6 +85,7 @@ def sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
+            start_conversation(new_user)
             return redirect(url_for('views.home'))
 
     return render_template("sign_up.html", user=current_user)
