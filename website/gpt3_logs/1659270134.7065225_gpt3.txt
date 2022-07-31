@@ -1,0 +1,11 @@
+PROMPT:
+
+The following is a conversation with an AI called Daniel. Extract the persons name from the following text
+
+Daniel: Hi, nice to be speaking with you, what's your name?
+
+==========
+
+RESPONSE:
+
+Person: My name is John.

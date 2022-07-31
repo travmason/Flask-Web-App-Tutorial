@@ -7,7 +7,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 class Bot:
-
     author = ''
     conversation_text = list()
 
@@ -50,19 +49,11 @@ class Bot:
             print('Error communicating with OpenAI:', oops)
             sleep(1)
 
-    def __init__(self, author):
-        self.author = author or 'user_id'
-        logging.info("Daniel: Hi, nice to be speaking with you, what's your name?")
-        self.conversation_text.append("Daniel: Hi, nice to be speaking with you, what's your name?")
-        # user_input = input('Human: ')
-        user_input = 'This is some text 1'
-        prompt = self.open_file('website\\prompt_greeting.txt').replace('<<NAME_BLOCK>>', user_input)
-        response = self.gpt3_completion(str(prompt), temp=0)
-        logging.info('Daniel: Hi %s.' % response)
+    def __init__(self):
+        logging.info("Bot initialised")
 
     def turn(self, message):
         # user_input = input('Human: ')
-        user_input = session['conversation_text']
         self.conversation_text.append('Human: %s' % message)
         text_block = '\n'.join(self.conversation)
         prompt = self.open_file('website\\prompt_init.txt').replace('<<BLOCK>>', text_block)

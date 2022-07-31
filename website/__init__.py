@@ -2,14 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
-from .daniel import Bot
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
 db = SQLAlchemy()
 DB_NAME = "chat.db"
-bot = Bot('user_id_goes_here')
 
 def create_app():
     app = Flask(__name__)

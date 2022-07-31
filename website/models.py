@@ -13,6 +13,7 @@ class Note(db.Model):
 class Conversation(db.Model):
     __tablename__ = 'conversations'
     con_id = db.Column(db.Integer, primary_key=True)
+    session_id = db.Column(db.Integer)
     prompt = db.Column(db.String(100000))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

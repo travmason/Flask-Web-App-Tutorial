@@ -4,6 +4,7 @@ from .models import Note
 from .models import Conversation
 from . import db
 import json
+import logging
 
 views = Blueprint('views', __name__)
 
@@ -17,8 +18,12 @@ def home():
         if len(note) < 1:
             flash('Did you mean to say something?', category='error')
         else:
+            conn_id = Conversation.query.filter_by(user_id=current_user.id).order_by(Conversation.con_id.desc()).first()
+            logging.info('conn_id:' + str(conn_id.con_id))
+            new_turn = Conversation(prompt=note, user_id=current_user.id)
             new_note = Note(data=note, user_id=current_user.id)
             db.session.add(new_note)
+            db.session.add(new_turn)
             db.session.commit()
             flash('Note added!', category='success')
 
