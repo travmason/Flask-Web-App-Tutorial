@@ -2,11 +2,13 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
+from .daniel import Bot
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
 db = SQLAlchemy()
+bot = Bot()
 DB_NAME = "chat.db"
 
 def create_app():
@@ -22,7 +24,7 @@ def create_app():
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
-    from .models import User, Note, Conversation
+    from .models import User
 
     create_database(app)
 
