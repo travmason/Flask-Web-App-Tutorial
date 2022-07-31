@@ -5,10 +5,9 @@ from . import db
 from flask_login import login_user, login_required, logout_user, current_user
 import logging
 import os
-from .daniel import Bot 
+from . import bot 
 
 auth = Blueprint('auth', __name__)
-bot = Bot()
 
 def open_file(filename):
     document = os.getcwd()+'\\'+filename
@@ -17,20 +16,18 @@ def open_file(filename):
         return infile.read()
 
 def start_conversation(user):
-    prompt = "Daniel: Hi, nice to be speaking with you, what's your name?"
-    prompt = open_file('website\\prompt_greeting.txt').replace('<<NAME_BLOCK>>', prompt)
+    # prompt = open_file('website\\prompt_greeting.txt').replace('<<NAME_BLOCK>>', prompt)
+    prompt = open_file('website\\prompt_greeting.txt')
     logging.info('prompt: ' + prompt)
     
-    logging.info('User:' + str(user))
     conn_id = Conversation.query.filter_by(user_id=user.id).order_by(Conversation.con_id.desc()).first()
-    logging.info('conn_id:' + str(conn_id.con_id))
     conn_id.con_id = conn_id.con_id + 1
     new_turn = Conversation(prompt='', session_id=conn_id.con_id, user_id=current_user.id)
     db.session.add(new_turn)
     db.session.commit()
 
-    response = bot.gpt3_completion(str(prompt), temp=0)
-    logging.info('Daniel: Hi %s.' % response)
+    # response = bot.gpt3_completion(str(prompt), temp=0)
+    # logging.info('Daniel: Hi %s.' % response)
     
 
 
@@ -41,6 +38,7 @@ def login():
         password = request.form.get('password')
 
         user = User.query.filter_by(email=email).first()
+        logging.info('user:' + str(user))
         if user:
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
