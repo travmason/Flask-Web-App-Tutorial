@@ -13,11 +13,12 @@ class Bot:
 
     def open_file(self, filename):
         document = os.getcwd()+'\\'+filename
-        logging.info(document)
+        logging.info('open_file document:' + document)
         with open(document, 'r', encoding='utf-8') as infile:
             return infile.read()
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
+    logging.info('openai.api_key: ' + openai.api_key)
 
     def gpt3_completion(self, prompt, engine='text-davinci-002', temp=0.9, top_p=1.0, tokens=400, freq_pen=1.5, pres_pen=0.0, stop=['Human:', 'Daniel:']):
         max_retry = 5
@@ -37,7 +38,9 @@ class Bot:
             text = response['choices'][0]['text'].strip()
             text = re.sub('\s+', ' ', text)
             filename = '%s_gpt3.txt' % time()
-            with open('gpt3_logs/%s' % filename, 'w') as outfile:
+            logfile = os.getcwd() + '\\' + 'website\\gpt3_logs\\' + filename
+            logging.info('log file name:' + logfile)
+            with open(logfile, 'w') as outfile:
                 outfile.write('PROMPT:\n\n' + prompt + '\n\n==========\n\nRESPONSE:\n\n' + text)
             return text
         except Exception as oops:
@@ -55,7 +58,7 @@ class Bot:
         user_input = 'This is some text 1'
         prompt = self.open_file('website\\prompt_greeting.txt').replace('<<NAME_BLOCK>>', user_input)
         response = self.gpt3_completion(str(prompt), temp=0)
-        print('Daniel: Hi %s.' % response)
+        logging.info('Daniel: Hi %s.' % response)
 
     def turn(self, message):
         # user_input = input('Human: ')
@@ -64,6 +67,6 @@ class Bot:
         text_block = '\n'.join(self.conversation)
         prompt = self.open_file('website\\prompt_init.txt').replace('<<BLOCK>>', text_block)
         prompt = prompt + '\nDaniel:'
-        response = gpt3_completion(prompt)
-        print('Daniel: ', response)
+        response = self.gpt3_completion(prompt)
+        logging.info('Daniel: ' + response)
         self.conversation_text.append('Daniel: %s' % response)
