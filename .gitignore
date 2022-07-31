@@ -1,6 +1,6 @@
 .vscode
 website/__pycache__
-website/database.db
+# website/chat.db
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

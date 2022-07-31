@@ -17,7 +17,7 @@ class Bot:
             return infile.read()
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
-    logging.info('openai.api_key: ' + openai.api_key)
+    # logging.info('openai.api_key: ' + openai.api_key)
 
     def gpt3_completion(self, prompt, engine='text-davinci-002', temp=0.9, top_p=1.0, tokens=400, freq_pen=1.5, pres_pen=0.0, stop=['Human:', 'Daniel:']):
         max_retry = 5

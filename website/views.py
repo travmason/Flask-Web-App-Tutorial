@@ -32,7 +32,7 @@ def home():
 
             conversation_text.append(conversation.prompt)
             text_block = '\n'.join(conversation_text)
-            prompt = open_file('website\\prompt_init.txt').replace('<<BLOCK>>', text_block)
+            prompt = open_file('website/prompt_init.txt').replace('<<BLOCK>>', text_block)
             prompt = prompt + '\nDaniel:'
             response = bot.gpt3_completion(prompt)
             display_response = 'Daniel: ' + response
