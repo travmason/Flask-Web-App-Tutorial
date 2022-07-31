@@ -11,15 +11,18 @@ class Bot:
     author = ''
     conversation_text = list()
 
-    def open_file(self, filepath):
-        with open(filepath, 'r', encoding='utf-8') as infile:
+    def open_file(self, filename):
+        document = os.getcwd()+'\\'+filename
+        logging.info(document)
+        with open(document, 'r', encoding='utf-8') as infile:
             return infile.read()
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    def gpt3_completion(prompt, engine='text-davinci-002', temp=0.9, top_p=1.0, tokens=400, freq_pen=1.5, pres_pen=0.0, stop=['Human:', 'Daniel:']):
+    def gpt3_completion(self, prompt, engine='text-davinci-002', temp=0.9, top_p=1.0, tokens=400, freq_pen=1.5, pres_pen=0.0, stop=['Human:', 'Daniel:']):
         max_retry = 5
         retry = 0
+        logging.info('Prompt type:' + str(type(prompt)))
         prompt = prompt.encode(encoding='ASCII',errors='ignore').decode()
         try:
             response = openai.Completion.create(
@@ -49,15 +52,17 @@ class Bot:
         logging.info("Daniel: Hi, nice to be speaking with you, what's your name?")
         self.conversation_text.append("Daniel: Hi, nice to be speaking with you, what's your name?")
         # user_input = input('Human: ')
-        prompt = self.open_file('.\prompt_greeting.txt').replace('<<NAME_BLOCK>>', user_input)
-        response = gpt3_completion(prompt, temp=0)
+        user_input = 'This is some text 1'
+        prompt = self.open_file('website\\prompt_greeting.txt').replace('<<NAME_BLOCK>>', user_input)
+        response = self.gpt3_completion(str(prompt), temp=0)
         print('Daniel: Hi %s.' % response)
 
     def turn(self, message):
-        user_input = input('Human: ')
+        # user_input = input('Human: ')
+        user_input = session['conversation_text']
         self.conversation_text.append('Human: %s' % message)
         text_block = '\n'.join(self.conversation)
-        prompt = self.open_file('.\prompt_init.txt').replace('<<BLOCK>>', text_block)
+        prompt = self.open_file('website\\prompt_init.txt').replace('<<BLOCK>>', text_block)
         prompt = prompt + '\nDaniel:'
         response = gpt3_completion(prompt)
         print('Daniel: ', response)
