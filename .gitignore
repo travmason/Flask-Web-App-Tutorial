@@ -1,3 +1,7 @@
 .vscode
 website/__pycache__
 website/database.db
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
