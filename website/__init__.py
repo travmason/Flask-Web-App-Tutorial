@@ -12,7 +12,7 @@ bot = Bot()
 DB_NAME = "chat.db"
 
 def create_app():
-    app = Flask(__name__)
+    application = app = Flask(__name__)
     app.config['SECRET_KEY'] = 'ibhsfdiug879243*&*&239230hofea7243r6&%^%&^&#'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -36,7 +36,7 @@ def create_app():
     def load_user(id):
         return User.query.get(int(id))
 
-    return app
+    return application
 
 
 def create_database(app):
