@@ -5,7 +5,7 @@ from flask_login import LoginManager
 from .daniel import Bot
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 db = SQLAlchemy()
 bot = Bot()
