@@ -10,7 +10,7 @@ import os
 auth = Blueprint('auth', __name__)
 
 def open_file(filename):
-    document = os.getcwd()+'\\'+filename
+    document = filename
     logging.info('open_file document:' + document)
     with open(document, 'r', encoding='utf-8') as infile:
         return infile.read()
