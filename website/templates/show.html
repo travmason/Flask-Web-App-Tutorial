@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang = "en">
+   <head></head>
+   <body>
+      
+      <h3>
+         <a href = "{{ url_for('show') }}">Role Play Bot Conversations</a>
+      </h3>
+      
+      <hr/>
+      {%- for message in get_flashed_messages() %}
+         {{ message }}
+      {%- endfor %}
+		
+      <h3>Conversations</h3>
+      
+      <table>
+         <thead>
+            <tr>
+               <th>Session ID</th>
+               <th>Date</th>
+               <th>Prompt</th>
+               <th>User ID</th>
+            </tr>
+         </thead>
+         
+         <tbody>
+            {% for convo in conversations %}
+               <tr>
+                  <td>{{ convo.session_id }}</td>
+                  <td>{{ convo.date }}</td>
+                  <td>{{ convo.prompt }}</td>
+                  <td>{{ convo.user_id }}</td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+      
+   </body>
+</html>

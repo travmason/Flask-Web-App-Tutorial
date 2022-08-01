@@ -58,3 +58,9 @@ def delete_note():
             db.session.commit()
 
     return jsonify({})
+
+@views.route('/conversations', methods=['GET', 'POST'])
+@login_required
+def conversations():
+    data = Conversation.query.all()
+    return render_template("show.html", conversations = data)
