@@ -37,7 +37,7 @@ class Bot:
             text = response['choices'][0]['text'].strip()
             text = re.sub('\s+', ' ', text)
             filename = '%s_gpt3.txt' % time()
-            logfile = os.getcwd() + '\\' + 'website\\gpt3_logs\\' + filename
+            logfile = 'website/gpt3_logs/' + filename
             logging.info('log file name:' + logfile)
             with open(logfile, 'w') as outfile:
                 outfile.write('PROMPT:\n\n' + prompt + '\n\n==========\n\nRESPONSE:\n\n' + text)
@@ -51,13 +51,3 @@ class Bot:
 
     def __init__(self):
         logging.info("Bot initialised")
-
-    def turn(self, message):
-        # user_input = input('Human: ')
-        self.conversation_text.append('Human: %s' % message)
-        text_block = '\n'.join(self.conversation)
-        prompt = self.open_file('website\\prompt_init.txt').replace('<<BLOCK>>', text_block)
-        prompt = prompt + '\nDaniel:'
-        response = self.gpt3_completion(prompt)
-        logging.info('Daniel: ' + response)
-        self.conversation_text.append('Daniel: %s' % response)
