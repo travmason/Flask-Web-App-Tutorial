@@ -21,26 +21,30 @@ def home():
         if len(message) < 1:
             flash('Did you mean to say something?', category='error')
         else:
-            conversation = Conversation.query.filter_by(user_id=current_user.id).order_by(Conversation.con_id.desc()).first()
-            if conversation:
-                logging.info('session_id:' + str(conversation.session_id))
+            conversation = Conversation.query.filter_by(user_id=current_user.id).order_by(Conversation.session_id.desc()).first()
             conversation.prompt = conversation.prompt + '\n' + message
             conversation.user_id=current_user.id
             new_note = Note(data=message, user_id=current_user.id)
             db.session.add(new_note)
+            logging.info('New Note: \nPrompt: ' + conversation.prompt + '\nSession_id: ' + str(conversation.session_id) + ';\nUser_id: ' + str(conversation.user_id))
             db.session.commit()
 
             conversation_text.append(conversation.prompt)
-            text_block = '\n'.join(conversation_text)
-            prompt = open_file('website/prompt_init.txt').replace('<<BLOCK>>', text_block)
+            prompt = '\n'.join(conversation_text)
             prompt = prompt + '\nDaniel:'
+            logging.info('Prompt: ' + prompt)
             response = bot.gpt3_completion(prompt)
-            display_response = 'Daniel: ' + response
-            conversation.prompt = conversation.prompt + '\nDaniel: ' + response
-            new_note = Note(data=display_response, user_id=current_user.id)
-            db.session.add(new_note)
+            try:
+                display_response = 'Daniel: ' + response
+            except:
+                logging.error('Something wrong with response from GPT-3')
+            else:
+                conversation.prompt = conversation.prompt + '\nDaniel: ' + response
+                logging.info('Post gpt-3 Prompt: ' + conversation.prompt)
+                new_note = Note(data=display_response, user_id=current_user.id)
+                db.session.add(new_note)
 
-            db.session.commit()
+                db.session.commit()
 
             # flash('Note added!', category='success')
 
@@ -59,7 +63,7 @@ def delete_note():
 
     return jsonify({})
 
-@views.route('/conversations', methods=['GET', 'POST'])
+@views.route('/conversations', methods=['POST'])
 @login_required
 def conversations():
     data = Conversation.query.all()

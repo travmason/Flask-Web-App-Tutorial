@@ -22,8 +22,10 @@ def start_conversation(user):
     conversation = Conversation.query.filter_by(user_id=user.id).order_by(Conversation.con_id.desc()).first()
     if conversation:
         session_id = conversation.session_id + 1
+        logging.info('session_id: ' + str(session_id))
     else:
         session_id = 1
+        logging.info('session_id: ' + str(session_id))
     new_conversation = Conversation(prompt=prompt.prompt, session_id=session_id, user_id=current_user.id)
     db.session.add(new_conversation)
     db.session.commit()
